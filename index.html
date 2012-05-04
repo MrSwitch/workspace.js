@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Frames.js</title>
+	
+<script>
+//<![CDATA[
+		var local = ( /local/.test(window.location.host) ? 0 : 1);
+		function loadScript(a){
+			for(var i=0;i<a.length;i++){
+				document.write('<script src="'+a[i]+'"><\/script>');
+			}
+		}
+		loadScript([['../_packages/jquery.js','http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'][local]]);
+//]]>
+</script>
+
+	<script src="workspace.js"></script>
+	<link rel="stylesheet" href="workspace.css" />
+<style>
+	body{
+		background-color:#f1f1f1;
+		margin:0;
+		text-align:center;
+		font-family:Helvetica;
+		color:#232323;
+	}
+	header,footer,section{
+		position:absolute;
+		width:100%;
+	}
+	header{
+		height:100px;
+		top:0;
+	}
+		header h1{
+			margin-bottom:0;
+		}
+		header h1+p{
+			margin-top:0;
+		}
+	footer{
+		height:100px;
+		bottom:0;
+		text-align:center;
+
+		display: -webkit-box; 
+		-webkit-box-align: center;
+		display: -moz-box; 
+		-moz-box-align: center;
+		display: -ms-box; 
+		-ms-box-align: center;
+		display: box; 
+		box-align: center;
+
+		-webkit-box-pack: center;
+		-moz-box-pack: center;
+		-ms-box-pack: center;
+		box-pack:center;
+	}
+		footer input, footer button{
+			vertical-align:middle;
+		}
+		
+	
+	section{
+		background-color:white;
+		top:100px;
+		bottom:100px;
+		width:100%;
+		position:absolute;
+		
+		overflow:auto;
+	}
+	
+	nav{
+		background-color:red;
+		min-width:100px;
+		width:25%;
+	}
+	article{
+		width:50%;
+		background-color:blue;
+	}
+
+	</style>
+</head>
+<body>
+	<header>
+		<h1>frames.js</h1>
+		<p>A plugin for an app like layout</p>
+	</header>
+
+	<section class="frameset inline"><nav data-framename="Directory"></nav><nav data-framename="Children"></nav><article data-framename="Movie"></article></section>
+	<footer>
+	<footer>
+			<button>-</button>
+			<input type='range' min='0' max='10' value='1'/>
+			<button>+</button>
+	</footer>
+		</footer>
+	<script>
+		$('button').click(function(){
+			var i = (this.innerHTML === '+') ? 1 : -1;
+			$('input[type=range]').val(parseInt($('input[type=range]').val())+i).trigger('change');
+		});
+
+		$('input[type=range]').change(function(){
+			var i = parseInt( $(this).val() ),
+				n = $('section .frame:not(nav)').length;
+			while(i < n && n--){
+				$('section .frame:last').remove();
+			}
+			while(i > n && ++n){
+				$('section').append('<article class="frame"/>');
+			}
+		});
+
+	</script>
+	</body>
+</html>

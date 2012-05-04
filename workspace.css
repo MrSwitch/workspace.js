@@ -1,0 +1,105 @@
+﻿/**
+ * WorkSpace.js
+ * @author Andrew Dodson
+ */
+
+.frameset{
+	width:100%;
+	box-sizing:border-box;
+	-moz-box-sizing:border-box;
+	white-space:normal;
+	white-space-collapsing:discard;
+	
+	/** Hack to remove the white space between element**/
+	letter-spacing: -.31em;
+	word-spacing: -.43em;
+	
+	overflow:hidden;
+}
+	.frameset.inline .frame{
+		display:inline-block;
+		vertical-align:top;
+	}
+
+	.frameset .frame{
+		position:relative;
+		box-sizing:border-box;
+		-moz-box-sizing:border-box;
+		height:100%;
+		overflow:auto;
+		margin:0;
+	    letter-spacing: normal;
+	    word-spacing: normal;
+	}
+		.frameset .frame .resize{
+			position:absolute;
+			cursor:w-resize;
+			right:0;
+			top:0;
+			bottom:0;
+			height:100%;
+			width:5px;
+			padding:0;
+			border:0;
+		}
+		.frameset .frame:last-child .resize{
+			display:none;
+		}
+		.frameset .frame .pin{
+			position:absolute;
+			top:0;
+			right:0;
+			margin:0;
+			border:0;
+			border-radius:3px;
+			line-height:0.7em;
+			padding:2px 4px;
+			vertical-align:top;
+		}
+		.frameset .frame .pin:after{
+			content:'X';
+			font-size:9px;
+		}
+
+	.frameset .frame:before{
+		position:absolute;
+		top:0;
+		left:0;
+	}
+	/*
+	.frame:after{
+		content:" ";
+		width:10px;
+		height:100%;
+		background-color:gray;
+		position:absolute;
+		right:-25px;
+		cursor:pointer;
+	}
+	.frame:last-child:after{
+		display:none;
+	}
+	*/
+
+	/**
+	 * Pinned
+	 */
+	.frameset .frame.pinned{
+		width:0;
+		position:absolute;
+		left:0;
+		z-index:10000;
+		background:transparent;
+	}
+		.frameset .frame.pinned:before{
+		/*
+			-webkit-transform: rotate(-90deg) translateX(-80px);
+			-webkit-transform-origin: 0 0;
+		*/
+			content:attr(data-framename);
+			z-index:1000;
+			background-color:gray;
+		}
+	.frameset .frame.pinned *{
+		display:none;
+	}
