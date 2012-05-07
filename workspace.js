@@ -55,8 +55,10 @@ $.fn.touch = function(callback, complete){
 
 $.fn.frameset = function(){
 
-	//
-	// 
+	// Width
+	var MOBILE_WIDTH = 600;
+
+
 	//
 	$(this).addClass('frameset').find('> *').addClass('frame').each(function(){
 
@@ -153,19 +155,30 @@ $.fn.frameset = function(){
 				$(this).removeClass('pinned').removeAttr('style').parent('.frameset').trigger('fillframe');
 			}
 		});
+	}).find('.workspace-back').live('click', function(){
+		$(this).parents('.frame').prev('.frame').addClass('active').siblings().removeClass('active');
 	});
-
 
 	//
 	// FillFrame
-	// 
 	//
 	$(this).bind('fillframe', function(){
+		
+		// Is the frame
+		if(window.outerWidth < MOBILE_WIDTH){
+			$(this).addClass('mobile');
+			$('.frame',this).width('100%').each(function(){console.log(this);});
+			return;
+		}
+
+		// Just in case this we defined as a mobile app
+		$(this).filter('.mobile').removeClass('mobile');
+
 		// for all the nested frames within this
 		// we are going to reorganise the widths
 		var diff = $(this).width();
 
-		$('.frame:not(.pinned)').each(function(){
+		$('.frame:not(.pinned)',this).each(function(){
 		
 			// How wide is this element?
 			var w = $(this).outerWidth();
@@ -201,8 +214,11 @@ $.fn.frameset = function(){
 			$(this).width((wid) +'px');
 		});
 	});
+
 	
 	return $(this);
+	
+
 };
 
 
@@ -224,4 +240,3 @@ $(function(){
 	});
 
 });
-	
