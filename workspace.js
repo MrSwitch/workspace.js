@@ -193,21 +193,22 @@ $.fn.frameset = function(){
 			}
 			var min = parseInt($(this).css('minWidth'),10) || 0,
 				max = parseInt($(this).css('maxWidth'),10) || 0,
-				wid = $(this).outerWidth() + diff;
+				wid = $(this).outerWidth();
 
 			console.log(diff,wid,min,max);
 
-			if(wid<min){
+			if((wid+diff)<min){
 				console.log(diff,wid,'min');
-				diff = -min;
+				diff += (wid - min);
 				wid = min;
 			}
-			else if(wid>max&&max>0){
+			else if((wid+diff)>max&&max>0){
 				console.log(diff,wid,'max');
-				diff -= max-wid;
+				diff -= (wid - max);
 				wid = max;
 			}
 			else{
+				wid += diff;
 				diff = 0;
 			}
 			console.log(diff,wid);
