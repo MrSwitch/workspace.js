@@ -22,7 +22,7 @@
 	}
 	/** Mobile view */
 	.frameset.mobile .frame{
-		z-index:0;
+		display:none;
 	}
 	.frameset.mobile .frame.active{
 		position:absolute;
