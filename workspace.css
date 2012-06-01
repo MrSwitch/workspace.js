@@ -30,6 +30,7 @@
 		right:0;
 		z-index:1;
 		top:0;
+		display:block;
 	}
 	.frameset.mobile .frame{
 		overflow:hidden;
@@ -46,8 +47,13 @@
 	    word-spacing: normal;
 	}
 		.frameset .frame .resize{
+			user-select: none;
+			-moz-user-select: none;
+			-webkit-user-select: none;
+
 			position:absolute;
 			cursor:w-resize;
+			cursor: col-resize;
 			right:0;
 			top:0;
 			bottom:0;
