@@ -65,7 +65,11 @@
 		// Width
 		var MOBILE_WIDTH = 600;
 
-		$(this).addClass('frameset').find('> *').addClass('frame').each(function(){
+		$(this).addClass('frameset').find('> *').addClass('frame').each(function(i){
+
+			if(i===0){
+				$(this).addClass('active');
+			}
 
 			// Create resize buttons
 			$('<button class="resize"></button>').appendTo(this).touch(function(e,o){
