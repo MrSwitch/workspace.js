@@ -234,18 +234,21 @@
 
 	//
 	// Add Frameset to elements which contain '.frameset'
+	// This does not work in touch devices. Which frankly are too fidly to control. Lets rely on the admin the user would have assigned with CSS media queries.
 	//
-	$(function(){
+	if(!('ontouchstart' in window)){
+		$(function(){
 
-		// Find elements denoted as framesets...
-		// Append attributes to their chiidren;
-		$('.frameset').frameset().trigger('fillframe');
+			// Find elements denoted as framesets...
+			// Append attributes to their chiidren;
+			$('.frameset').frameset().trigger('fillframe');
 
-		// resize
-		$(window).bind('resize', function(){
-			$('.frameset').trigger('fillframe');
+			// resize
+			$(window).bind('resize', function(){
+				$('.frameset').trigger('fillframe');
+			});
+
 		});
-
-	});
+	}
 
 })(jQuery);
