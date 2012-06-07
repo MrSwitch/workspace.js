@@ -2,7 +2,12 @@
 
 	'use strict';
 
-	var console = console || {log:function(){}};
+	var console = console || {log:function(){}},
+		Touch = ("ontouchstart" in window);
+
+	if(Touch){
+		return;
+	}
 
 	//
 	// Touch
@@ -71,7 +76,7 @@
 				$(this).addClass('active');
 			}
 
-			if(!('ontouchstart' in window)){
+			if(!Touch){
 				// Create resize buttons
 				$('<button class="resize"></button>').appendTo(this).touch(function(e,o){
 
@@ -230,11 +235,12 @@
 
 
 		// resize
-		if(!("ontouchstart" in window)){
+		if(!Touch){
 			var frameset = this;
 			$(window).bind('resize', function(){
 				$(frameset).trigger('fillframe');
 			});
+			$(this).trigger('fillframe');
 		}
 
 		return $(this);

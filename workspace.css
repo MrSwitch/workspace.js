@@ -89,9 +89,6 @@
 		}
 
 	.frameset .frame:before{
-		position:absolute;
-		top:0;
-		left:0;
 	}
 	/*
 	.frame:after{
@@ -133,6 +130,9 @@
 			-webkit-transform: rotate(-90deg) translateX(-80px);
 			-webkit-transform-origin: 0 0;
 		*/
+			position:absolute;
+			top:0;
+			left:0;
 			content:'+';
 			z-index:1000;
 			font-size:2em;
