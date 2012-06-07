@@ -236,7 +236,8 @@
 	// Add Frameset to elements which contain '.frameset'
 	// This does not work in touch devices. Which frankly are too fidly to control. Lets rely on the admin the user would have assigned with CSS media queries.
 	//
-	if(!('ontouchstart' in window)){
+	//if(!('ontouchstart' in window)){
+	if(true){
 		$(function(){
 
 			// Find elements denoted as framesets...
