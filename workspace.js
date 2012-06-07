@@ -71,100 +71,103 @@
 				$(this).addClass('active');
 			}
 
-			// Create resize buttons
-			$('<button class="resize"></button>').appendTo(this).touch(function(e,o){
+			if(!('ontouchstart' in window)){
+				// Create resize buttons
+				$('<button class="resize"></button>').appendTo(this).touch(function(e,o){
 
-				if(!o){
-					return false;
-				}
-				var diff = (e.screenX - o.screenX);
-				
-				// If item is at its minimum?
-				if(diff===0){
-					// nothing to do
-					return;
-				}
-				
-				var $frm = $(this).parent(),
-					$prev = $frm,
-					width;
-
-				do{
-					width = $prev.outerWidth() + diff;
-
-					if( width > parseInt($prev.css('maxWidth'),10)){
-						console.log('Too big');
-						continue;
+					if(!o){
+						return false;
 					}
-					else if( width < parseInt($prev.css('minWidth'),10)){
-						console.log('Too small');
-						continue;
+					var diff = (e.screenX - o.screenX);
+					
+					// If item is at its minimum?
+					if(diff===0){
+						// nothing to do
+						return;
 					}
-					else{
-						passed = true;
-						break;
+					
+					var $frm = $(this).parent(),
+						$prev = $frm,
+						width;
+
+					do{
+						width = $prev.outerWidth() + diff;
+
+						if( width > parseInt($prev.css('maxWidth'),10)){
+							console.log('Too big');
+							continue;
+						}
+						else if( width < parseInt($prev.css('minWidth'),10)){
+							console.log('Too small');
+							continue;
+						}
+						else{
+							passed = true;
+							break;
+						}
 					}
-				}
-				while( ($prev = $prev.prev('.frame')) && $prev.length > 0 );
+					while( ($prev = $prev.prev('.frame')) && $prev.length > 0 );
 
-				if($prev.length===0){
-					console.log('Cannot shift left item any further');
-					return;
-				}
-
-				var $next = $frm,
-					nwidth,
-					passed = false;
-
-				while( $next.next('.frame').length > 0 ){
-					$next = $next.next('.frame');
-					nwidth = $next.outerWidth() - diff;
-
-					if( nwidth > parseInt($next.css('maxWidth'),10)){
-						console.log('Too big for next');
-						continue;
+					if($prev.length===0){
+						console.log('Cannot shift left item any further');
+						return;
 					}
-					else if( nwidth < parseInt($next.css('minWidth'),10)){
-						console.log('Too small for next');
-						continue;
+
+					var $next = $frm,
+						nwidth,
+						passed = false;
+
+					while( $next.next('.frame').length > 0 ){
+						$next = $next.next('.frame');
+						nwidth = $next.outerWidth() - diff;
+
+						if( nwidth > parseInt($next.css('maxWidth'),10)){
+							console.log('Too big for next');
+							continue;
+						}
+						else if( nwidth < parseInt($next.css('minWidth'),10)){
+							console.log('Too small for next');
+							continue;
+						}
+						else{
+							passed = true;
+							break;
+						}
 					}
-					else{
-						passed = true;
-						break;
+					
+					if(!passed){
+						console.log('Cannot move right items any further');
+						return;
 					}
-				}
-				
-				if(!passed){
-					console.log('Cannot move right items any further');
-					return;
-				}
 
-				// Change size
-				$prev.width( width +"px");
+					// Change size
+					$prev.width( width +"px");
 
-				// This neighbour
-				$next.width( nwidth + 'px');
+					// This neighbour
+					$next.width( nwidth + 'px');
 
-			});
+				});
 
-			// Toggle Pin
-			// create a pin member and attach it to each frame
-			$('<button class="pin"></button>').appendTo(this).click(function(e){
+				// Toggle Pin
+				// create a pin member and attach it to each frame
+				$('<button class="pin"></button>').appendTo(this).click(function(e){
 
-				// Pinned + trigger fillframe
-				$(this).parent().addClass('pinned').css({width:'20px',minWidth:0}).parent().trigger('fillframe');
+					// Pinned + trigger fillframe
+					$(this).parent().addClass('pinned').css({width:'20px',minWidth:0}).parent().trigger('fillframe');
 
-				e.stopPropagation();
-			});
+					e.stopPropagation();
+				});
 
-			// Remove Pinned
-			// create a pin member and attach it to each frame
-			$(this).click(function(){
-				if($(this).hasClass('pinned')){// remove + trigger fillframe
-					$(this).removeClass('pinned').removeAttr('style').parent('.frameset').trigger('fillframe');
-				}
-			});
-		}).find('.workspace-back').live('click', function(){
+
+				// Remove Pinned
+				// create a pin member and attach it to each frame
+				$(this).click(function(){
+					if($(this).hasClass('pinned')){// remove + trigger fillframe
+						$(this).removeClass('pinned').removeAttr('style').parent('.frameset').trigger('fillframe');
+					}
+				});
+			}
+		}).find('.workspace-back').bind('click', function(){
 			$(this).parents('.frame').prev('.frame').addClass('active').siblings().removeClass('active');
 		});
 
@@ -236,20 +239,17 @@
 	// Add Frameset to elements which contain '.frameset'
 	// This does not work in touch devices. Which frankly are too fidly to control. Lets rely on the admin the user would have assigned with CSS media queries.
 	//
-	//if(!('ontouchstart' in window)){
-	if(true){
-		$(function(){
+	$(function(){
 
-			// Find elements denoted as framesets...
-			// Append attributes to their chiidren;
-			$('.frameset').frameset().trigger('fillframe');
+		// Find elements denoted as framesets...
+		// Append attributes to their chiidren;
+		$('.frameset').frameset();
 
-			// resize
-			$(window).bind('resize', function(){
-				$('.frameset').trigger('fillframe');
-			});
-
+		// resize
+		$(window).bind('resize', function(){
+			$('.frameset').trigger('fillframe');
 		});
-	}
+
+	});
 
 })(jQuery);
