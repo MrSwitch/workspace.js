@@ -228,6 +228,15 @@
 			});
 		});
 
+
+		// resize
+		if(!("ontouchstart" in window)){
+			var frameset = this;
+			$(window).bind('resize', function(){
+				$(frameset).trigger('fillframe');
+			});
+		}
+
 		return $(this);
 
 	};
@@ -244,11 +253,6 @@
 		// Find elements denoted as framesets...
 		// Append attributes to their chiidren;
 		$('.frameset').frameset();
-
-		// resize
-		$(window).bind('resize', function(){
-			$('.frameset').trigger('fillframe');
-		});
 
 	});
 
