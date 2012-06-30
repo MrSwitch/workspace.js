@@ -248,6 +248,49 @@
 	};
 
 
+	//
+	// By adding data-src to images and binding dataSrc to a ancestor
+	// this function will remove the data-src attribute and load the image when the image is in a visible area
+	// List of images?
+	var images = [];
+	$.fn.dataSrc = function(){
+		// SHOWS IMAGES WHEN THEY ARE REQUIRED
+		return $(this)
+			.each(function(){
+				// Position
+				var h = $(this).height(),
+					t = $(this).offset().top;
+
+				// [data-src]
+				$('img:not([src])',this).filter(function(){
+					// Where is this positioned?
+					var _t = $(this).offset().top,
+						_h = $(this).height();
+
+					// does it fix in the bounding box?
+					return ( ( _t + _h ) >= t && _t <= ( t + h ) );
+
+				}).each(function(){
+					// SRC
+					this.src = $(this).attr('data-src');
+					if($(this).is('[data-src-error]')){
+						this.onerror = function(){
+							this.src = $(this).attr('data-src-error');
+						};
+					}
+					$(this).removeAttr('data-src');
+					// Have we already loaded this image into the browser?
+					if( $.inArray(this.src,images) > -1 ){
+						$(this).animate({opacity:1},'fast');
+					} else {
+						$(this).load( function(){
+							$(this).animate({opacity:1},'fast');
+							images.push(this.src);
+						} );
+					}
+				});
+			});
+	};
 
 
 	//
@@ -259,6 +302,11 @@
 		// Find elements denoted as framesets...
 		// Append attributes to their chiidren;
 		$('.frameset').frameset();
+
+		// Images with data-src get rendered with their prospective
+		$('.data-src').scroll(function(){
+			$(this).dataSrc();
+		});
 
 	});
 
