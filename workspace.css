@@ -72,15 +72,15 @@
 			border:0;
 			border-radius:3px;
 			line-height:0.7em;
-			padding:2px 4px;
+			padding:2px;
 			vertical-align:top;
 		}
 		.frameset .frame:last-child .resize{
 			display:none;
 		}
 		.frameset .frame .pin:after{
-			content:'\00D7';
-			font-size:1em;
+			content:'\2715'; /*\00D7';
+			font-size:1em;*/
 		}
 		/** mobile */
 		.frameset.mobile .frame .resize,
