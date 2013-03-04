@@ -63,6 +63,7 @@
 			width:5px;
 			padding:0;
 			border:0;
+			z-index:100;
 		}
 		.frameset .frame .pin{
 			position:absolute;
@@ -74,6 +75,7 @@
 			line-height:0.7em;
 			padding:2px;
 			vertical-align:top;
+			z-index:101;
 		}
 		.frameset .frame:last-child .resize{
 			display:none;
