@@ -2,7 +2,7 @@
 <html style="-ms-content-zooming: none;overflow:hidden;">
 
 <head>
-	<title>Frames.js</title>
+	<title>Workspace.js</title>
 
 	<!-- iOS devices -->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/> 
@@ -78,53 +78,65 @@
 		bottom:100px;
 		width:100%;
 		position:absolute;
-		
-		overflow:auto;
+		left:0;
+		right:0;
+		overflow:hidden;
 	}
 	
-	nav{
+	nav,article{
 		background-color:red;
 		min-width:100px;
-		width:25%;
+		width:30%;
+	}
+	nav:nth-child(1){
+		background-color:#f44;
+	}
+	nav:nth-child(2){
+		background-color:#f88;
+	}
+	nav:first-child{
+		width:20%;
+	}
+	nav:last-child{
+		width:10%;
 	}
 	article{
-		width:50%;
+		width:40%;
+	}
+
+	section .flex{
 		background-color:blue;
+	}
+
+	nav, article{
+		position: relative;
+	}
+	nav:after, article:after{
+		content:attr(title);
+		font-size:2rem;
+		word-wrap:break-word;
+		top: 45%;
+		text-align: center;
+		position: absolute;
+		width: 100%;
+		display: block;
+		left:0;
+		right:0;
 	}
 
 	</style>
 </head>
 <body>
+	<div class="frame-nav"></div>
+
 	<header>
-		<h1>frames.js</h1>
+		<button class="toggle-frame-nav" style="float:left;">menu</button> <h1>workspace.js</h1>
 		<p>A plugin for an app like layout</p>
 	</header>
 
-	<section class="frameset inline"><nav data-framename="Directory"></nav><nav data-framename="Children"></nav><article data-framename="Movie"></article></section>
+	<section><div class="frameset"><nav title="Search"></nav><nav title="Results"></nav><article title="Movie" class="flex"></article><nav title="Comments"></nav></div></section>
+
 	<footer>
-	<footer>
-			<button>-</button>
-			<input type='range' min='0' max='10' value='1'/>
-			<button>+</button>
 	</footer>
-		</footer>
-	<script>
-		$('button').click(function(){
-			var i = (this.innerHTML === '+') ? 1 : -1;
-			$('input[type=range]').val(parseInt($('input[type=range]').val())+i).trigger('change');
-		});
-
-		$('input[type=range]').change(function(){
-			var i = parseInt( $(this).val() ),
-				n = $('section .frame:not(nav)').length;
-			while(i < n && n--){
-				$('section .frame:last').remove();
-			}
-			while(i > n && ++n){
-				$('section').append('<article class="frame"/>');
-			}
-		});
-
-	</script>
-	</body>
+</body>
 </html>

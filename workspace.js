@@ -3,11 +3,34 @@
 	'use strict';
 
 	var console = console || {log:function(){}},
-		Touch = ("ontouchstart" in window);
+		Touch = ("ontouchstart" in window),
+		MOBILE_WIDTH = 600;
 
-	if(Touch){
-		return;
+	var transform = testProp("transform");
+
+	//
+	// TestProp tests support for FlexBox or Flex css specification
+	//
+	function testProp(prop,undefined){
+		var s = (document.createElement('div')).style;
+		return s["Moz"+prop] !== undefined || s["Webkit"+prop] !== undefined || s["ms"+prop] !== undefined;
 	}
+
+	var flex = testProp("FlexWrap");
+	var legacyflex = testProp("BoxDirection");
+
+	function mobile(){
+		var bool = (window.outerWidth < MOBILE_WIDTH);
+		$("html")[bool?'addClass':'removeClass']('mobile')[!bool?'addClass':'removeClass']('no-mobile');
+		return bool;
+	}
+
+	mobile();
+
+
+	//
+	// Add browser ability to the window html element
+	document.documentElement.className = [document.documentElement.className || '', (flex?"":"no-")+"flex",(legacyflex?"":"no-")+"legacyflex", (Touch?'':'no-')+'touch'].join(" ");
 
 	//
 	// Touch
@@ -61,117 +84,144 @@
 		});
 	};
 
+
 	//
 	// Frameset
 	// Make child elements flexible frame like
 	//
 	$.fn.frameset = function(){
 
-		// Width
-		var MOBILE_WIDTH = 600;
+		var $frmst = $(this);
+		/*
+		if($frmst.find(".inner-frameset").length){
+			$frmst = $frmst.find(".inner-frameset");
+		}*/
 
-		$(this).addClass('frameset').find('> *').addClass('frame').each(function(i){
-
-			if(i===0){
-				$(this).addClass('active');
+		// Define "frame" as a direct desendent of the frameset
+		// Add active status to the first one, or who bares the className 'frame-main'
+		var $frames = $frmst.addClass('frameset').find('> *').addClass('frame').each(function(i){
+			if(i===0||$(this).hasClass("frame-main")){
+				$(this).addClass('active').siblings().removeClass("active");
 			}
+		});
 
-			if(!Touch){
-				// Create resize buttons
-				$('<button class="resize"></button>').appendTo(this).touch(function(e,o){
+		// Do no more for touch devices
+		if( Touch ){
+			return;
+		}
 
-					if(!o){
-						return false;
+
+		// Only for non-touch devices do we need the drag controls
+		$frames.filter(function(){
+			return !( flex && $(this).hasClass("flex") );
+		}).each(function(i){
+
+			// Create resize buttons
+			$('<button class="resize"></button>').appendTo(this).touch(function(e,o){
+
+				if(!o){
+					return false;
+				}
+				var diff = (e.screenX - o.screenX);
+				
+				// If item is at its minimum?
+				if(diff===0){
+					// nothing to do
+					return;
+				}
+
+				var $frm = $(this).parent(),
+					$prev = $frm,
+					width;
+
+				// if the resize is on the left side
+				// swap the $prev with the actual prev element
+				if($(this).css("left") === "0px"){
+					$prev = $frm = $prev.prev();
+				}
+
+				do{
+					width = $prev.outerWidth() + diff;
+
+					if( width > parseInt($prev.css('maxWidth'),10)){
+						console.log('Too big');
+						continue;
 					}
-					var diff = (e.screenX - o.screenX);
-					
-					// If item is at its minimum?
-					if(diff===0){
-						// nothing to do
-						return;
+					else if( width < parseInt($prev.css('minWidth'),10)){
+						console.log('Too small');
+						continue;
 					}
-					
-					var $frm = $(this).parent(),
-						$prev = $frm,
-						width;
-
-					do{
-						width = $prev.outerWidth() + diff;
-
-						if( width > parseInt($prev.css('maxWidth'),10)){
-							console.log('Too big');
-							continue;
-						}
-						else if( width < parseInt($prev.css('minWidth'),10)){
-							console.log('Too small');
-							continue;
-						}
-						else{
-							passed = true;
-							break;
-						}
+					else{
+						passed = true;
+						break;
 					}
-					while( ($prev = $prev.prev('.frame')) && $prev.length > 0 );
+				}
+				while( ($prev = $prev.prev('.frame')) && $prev.length > 0 );
 
-					if($prev.length===0){
-						console.log('Cannot shift left item any further');
-						return;
+				if($prev.length===0){
+					console.log('Cannot shift left item any further');
+					return;
+				}
+
+				var $next = $frm,
+					nwidth,
+					passed = false;
+
+				while( $next.next('.frame').length > 0 ){
+					$next = $next.next('.frame');
+					nwidth = $next.outerWidth() - diff;
+
+					if( nwidth > parseInt($next.css('maxWidth'),10)){
+						console.log('Too big for next');
+						continue;
 					}
-
-					var $next = $frm,
-						nwidth,
-						passed = false;
-
-					while( $next.next('.frame').length > 0 ){
-						$next = $next.next('.frame');
-						nwidth = $next.outerWidth() - diff;
-
-						if( nwidth > parseInt($next.css('maxWidth'),10)){
-							console.log('Too big for next');
-							continue;
-						}
-						else if( nwidth < parseInt($next.css('minWidth'),10)){
-							console.log('Too small for next');
-							continue;
-						}
-						else{
-							passed = true;
-							break;
-						}
+					else if( nwidth < parseInt($next.css('minWidth'),10)){
+						console.log('Too small for next');
+						continue;
 					}
-					
-					if(!passed){
-						console.log('Cannot move right items any further');
-						return;
+					else{
+						passed = true;
+						break;
 					}
+				}
+				
+				if(!passed){
+					console.log('Cannot move right items any further');
+					return;
+				}
 
-					// Change size
-					$prev.width( width +"px");
+				// Change size
+				$prev.filter(function(){
+					return !( flex && $(this).hasClass("flex") );
+				}).width( width +"px");
 
-					// This neighbour
-					$next.width( nwidth + 'px');
+				// This neighbour
+				$next.filter(function(){
+					return !( flex && $(this).hasClass("flex") );
+				}).width( nwidth + 'px');
 
-				});
+			});
 
-				// Toggle Pin
-				// create a pin member and attach it to each frame
-				$('<button class="pin"></button>').appendTo(this).click(function(e){
+			/*
+			// Toggle Pin
+			// create a pin member and attach it to each frame
+			$('<button class="pin"></button>').appendTo(this).click(function(e){
 
-					// Pinned + trigger fillframe
-					$(this).parent().addClass('pinned').css({width:'20px',minWidth:0}).parent().trigger('fillframe');
+				// Pinned + trigger fillframe
+				$(this).parent().addClass('pinned').trigger('pinned').parent().trigger('fillframe');
 
-					e.stopPropagation();
-				});
+				e.stopPropagation();
+			});
 
 
-				// Remove Pinned
-				// create a pin member and attach it to each frame
-				$(this).click(function(){
-					if($(this).hasClass('pinned')){// remove + trigger fillframe
-						$(this).removeClass('pinned').removeAttr('style').parent('.frameset').trigger('fillframe');
-					}
-				});
-			}
+			// Remove Pinned
+			// create a pin member and attach it to each frame
+			$(this).click(function(){
+				if($(this).hasClass('pinned')){// remove + trigger fillframe
+					$(this).removeClass('pinned').trigger('pinned').parent('.frameset').trigger('fillframe');
+				}
+			});
+*/
 		}).find('.workspace-back').bind('click', function(){
 			$(this).parents('.frame').prev('.frame').addClass('active').siblings().removeClass('active');
 		});
@@ -179,17 +229,16 @@
 		//
 		// FillFrame
 		//
-		$(this).bind('fillframe', function(){
+		$frmst.bind('fillframe', function(){
 			
 			// Is the frame
-			if(window.outerWidth < MOBILE_WIDTH){
-				$(this).addClass('mobile');
-				$('.frame',this).width('100%').each(function(){console.log(this);});
+			if(mobile()){
+//				$('.frame',this).width('100%');
 				return;
 			}
 
 			// Just in case this we defined as a mobile app
-			$(this).filter('.mobile').removeClass('mobile');
+			$("html.mobile").removeClass('mobile');
 
 			// for all the nested frames within this
 			// we are going to reorganise the widths
@@ -202,7 +251,9 @@
 				diff -= w;
 
 				// fix bug in IE, FF when resize, lets fix the widths, to prevent it overriding its container
-				$(this).width(w+'px');
+				$(this).filter(function(){
+					return !( flex && $(this).hasClass("flex") );
+				}).width(w+'px');
 
 			}).each(function(){
 				if(diff===0){
@@ -229,29 +280,99 @@
 					diff = 0;
 				}
 				console.log(diff,wid);
-				$(this).width((wid) +'px');
+				$(this).filter(function(){
+					return !( flex && $(this).hasClass("flex") );
+				}).width((wid) +'px');
 			});
 		});
 
 
 		// resize
 		if(!Touch){
-			var frameset = this;
 			$(window).bind('resize', function(){
-				$(frameset).trigger('fillframe');
+				$frmst.trigger('fillframe');
 			});
-			$(this).trigger('fillframe');
+			$frmst.trigger('fillframe');
 		}
+		return $frmst;
+	};
 
-		return $(this);
-
+	//
+	// showFrame
+	// If a frame comes into focus, either by being:
+	// unppined or selected (frame-nav), or screen swipe bring its into focus
+	$.fn.showFrame = function(){
+		return $(this).each(function(){
+			var label = $('.frame-nav a').get($(this).index(0));
+			$(this).add(label).addClass('active').siblings().removeClass('active');
+			if(mobile()){
+				// lets create the offset
+				var i = $(this).index();
+				var $W = $(this).parent();
+				var x = "translateX(-"+((i/$W.find('.frame').length)*100)+"%)";
+				$W.css({transform:x,msTransform:x,MozTransform:x,WebkitTransform:x});
+			}
+			$(this).parent().trigger('fillframe');
+		});
 	};
 
 
 	//
+	$.fn.buildNavigation = function(){
+
+		$(this).each(function(){
+
+			var $nav = $(this);
+
+			if($nav.find(".toggle-frame-nav").length===0){
+				$nav.html('<button class="toggle-frame-nav">close</button>');
+			}
+
+			// Populate the Nav with frame links
+			$('.frameset .frame').each(function(){
+				var frame=this;
+				var $a = $("<a/>").text($(this).attr('data-framename')||this.title).appendTo($nav).attr("data-frmindex",$(frame).index()).click(function(){
+					if(!mobile()){
+						$(this).add(frame).toggleClass('pinned');
+					}
+					$(frame).showFrame();
+				});
+				$(this).on('pinned', function(){
+					$a[$(this).hasClass("pinned")?'addClass':'removeClass']('pinned');
+				});
+			});
+
+			// Add click event to body
+			// to get out of the menu
+			$('body').on("click", function(e){
+				if( $("html").hasClass('show-frame-nav') && !$(e.target).parents(".frame-nav").length ){
+					//e.preventDefault();
+					//e.stopPropagation();
+					$('html').toggleClass('show-frame-nav');
+				}
+			});
+
+			$nav.appendTo("body");
+
+			$(".toggle-frame-nav").click(function(e){
+				$(document.documentElement).toggleClass("show-frame-nav");
+				e.preventDefault();
+				e.stopPropagation();
+			});
+
+			$(window).bind('resize', function(){
+				$nav.height(window.innerHeight+"px");
+				$(document.body).height(window.innerHeight+"px");
+			}).trigger('resize');
+		});
+	};
+
+
+	//
+	// Loads images on demand
 	// By adding data-src to images and binding dataSrc to a ancestor
-	// this function will remove the data-src attribute and load the image when the image is in a visible area
-	// List of images?
+	// The data-src attribute is read and defines a path to the image
+	// load an image once the image fits a visible area. or if the image exists
 	var images = [];
 	$.fn.dataSrc = function(){
 		// SHOWS IMAGES WHEN THEY ARE REQUIRED
@@ -295,19 +416,60 @@
 
 	//
 	// Add Frameset to elements which contain '.frameset'
+	// Alternatively calling $("div").frameset() also works.
 	// This does not work in touch devices. Which frankly are too fidly to control. Lets rely on the admin the user would have assigned with CSS media queries.
-	//
 	$(function(){
 
 		// Find elements denoted as framesets...
 		// Append attributes to their chiidren;
 		$('.frameset').frameset();
 
-		// Images with data-src get rendered with their prospective
+		// Containers with images can be loaded on demand
+		// The container must simply have the className = "data-src"
+		// A change in scroll position or visibility triggers the check
 		$('.data-src').scroll(function(){
 			$(this).dataSrc();
 		});
 
+		// Show frames
+		// Add events to buttons which can expose the names of the frames.
+		// This is good for mobile.
+		$('.frame-nav').buildNavigation();
+
+		// Add Gestures
+		// To swipe between frames
+		$(window).bind('resize', function(){
+
+			// Get the number of frames in the frameset
+			var $F = $(".frameset");
+			var $f = $F.find(".frame");
+			if(!mobile()){
+				// reset frame
+				$F.add($f).css({width:'', transform : '', MozTransform : '', msTransform : '', WebkitTransform : ''});
+				return;
+			}
+
+			var W = $F.parent().innerWidth();
+			var tW = $f.length * W;
+			$F.css({width:tW+"px"});
+			$f.css({width:W+"px"});
+
+			// Update the frame selection
+			$f.filter(".active").showFrame();
+
+		}).trigger('resize');
+
+
+		$(document.body).on('keydown', function(e){
+			switch(e.which){
+				case 37:
+					$(".frameset .frame.active").prev().showFrame();
+				break;
+				case 39:
+					$(".frameset .frame.active").next().showFrame();
+				break;
+			}
+		});
 	});
 
 })(jQuery);
