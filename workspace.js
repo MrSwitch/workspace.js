@@ -491,7 +491,7 @@
 			var $f = $F.find(".frame");
 			if(!mobile()){
 				// reset frame
-				$F.add($f).css({width:''}).transform('translateX','');
+				$F.transform('translateX','').add($f).css({width:''});
 				return;
 			}
 
