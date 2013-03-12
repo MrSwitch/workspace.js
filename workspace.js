@@ -2,7 +2,7 @@
 
 	'use strict';
 
-	var console = console || {log:function(){}},
+	var console = window.console || {log:function(){}},
 		Touch = ("ontouchstart" in window),
 		MOBILE_WIDTH = 600;
 
@@ -32,15 +32,25 @@
 	// Add browser ability to the window html element
 	document.documentElement.className = [document.documentElement.className || '', (flex?"":"no-")+"flex",(legacyflex?"":"no-")+"legacyflex", (Touch?'':'no-')+'touch'].join(" ");
 
+
+	//
+	// $.fn.transform
+	// Change the transform
+	$.fn.transform = function(prop,value){
+		var x = prop + "(" + value + ")";
+		var o = {transform:x,msTransform:x,MozTransform:x,WebkitTransform:x};
+		return $(this).css(o);
+	};
+
 	//
 	// Touch
 	// @param callback function - Every touch event fired
 	// @param complete function- Once all touch event ends
 	//
-	$.fn.touch = function(callback, complete){
+	$.fn.touch = function(callback, start, complete){
 
 		// Store callbacks, and previous pointer position
-		var cb = {}, mv = {};
+		var cb = {}, mv = {}, fin = {};
 
 		$("body").bind('mousemove MSPointerMove', function(e){
 			// trigger the call
@@ -55,7 +65,16 @@
 		});
 
 		$("body").bind('mouseup MSPointerUp', function(e){
-			cb[e.originalEvent.pointerId||0] = null;
+
+			var i = e.originalEvent.pointerId||0;
+			cb[i] = null;
+
+			var func = fin[i];
+			if(func){
+				func.call(this,e);
+			}
+
+			fin[i] = null;
 		});
 
 
@@ -71,16 +90,44 @@
 					}
 
 					// default pointer ID
-					e.originalEvent.pointerId = e.originalEvent.pointerId || 0;
+					var i = e.originalEvent.pointerId = ( e.originalEvent.pointerId || 0);
 
 					// bind the on move handler to the
 					var el = this;
-					mv[e.originalEvent.pointerId] = e;
-					cb[e.originalEvent.pointerId] = function(_e,o){ callback.call(el,_e,o,e); };
+					mv[i] = e;
+					cb[i] = function(_e,o){ callback.call(el,_e,o,e); };
+					fin[i] = function(_e){ if(complete) {complete.call(el,_e,e);} };
 
 					e.preventDefault();
 					e.stopPropagation();
+
+					// trigger start
+					if(start){
+						start.call(this,e);
+					}
 				});
+		});
+	};
+
+	//
+	// $.fb.swipe
+	// Checks for a swipe to the left or to the right
+	$.fn.swipe = function(callback){
+		return $(this).touch(function(e,o,s){
+			var diff = e.screenX - s.screenX;
+			if(diff===0){
+				return;
+			}
+			e.type = "drag" + (diff>0?'Right':'Left');
+			e.gesture = {deltaX:diff,direction:(diff>0?'right':'left')};
+			callback.call(this, e);
+		}, function(e){
+
+		}, function(e,s){
+			var diff = e.screenX - s.screenX;
+			e.type = "release";
+			e.gesture = {deltaX:diff,direction:(diff>0?'right':'left')};
+			callback.call(this, e);
 		});
 	};
 
@@ -301,7 +348,7 @@
 	// showFrame
 	// If a frame comes into focus, either by being:
 	// unppined or selected (frame-nav), or screen swipe bring its into focus
-	$.fn.showFrame = function(){
+	$.fn.showFrame = function(toggle){
 		return $(this).each(function(){
 			var label = $('.frame-nav a').get($(this).index(0));
 			$(this).add(label).addClass('active').siblings().removeClass('active');
@@ -309,8 +356,10 @@
 				// lets create the offset
 				var i = $(this).index();
 				var $W = $(this).parent();
-				var x = "translateX(-"+((i/$W.find('.frame').length)*100)+"%)";
-				$W.css({transform:x,msTransform:x,MozTransform:x,WebkitTransform:x});
+				var x = "-"+((i/$W.find('.frame').length)*100)+"%";
+				$W.transform("translateX", x);
+			}else {
+				$(this).add(label)[toggle?'toggleClass':'removeClass']('pinned');
 			}
 			$(this).parent().trigger('fillframe');
 		});
@@ -332,10 +381,7 @@
 			$('.frameset .frame').each(function(){
 				var frame=this;
 				var $a = $("<a/>").text($(this).attr('data-framename')||this.title).appendTo($nav).attr("data-frmindex",$(frame).index()).click(function(){
-					if(!mobile()){
-						$(this).add(frame).toggleClass('pinned');
-					}
-					$(frame).showFrame();
+					$(frame).showFrame(true);
 				});
 				$(this).on('pinned', function(){
 					$a[$(this).hasClass("pinned")?'addClass':'removeClass']('pinned');
@@ -445,7 +491,7 @@
 			var $f = $F.find(".frame");
 			if(!mobile()){
 				// reset frame
-				$F.add($f).css({width:'', transform : '', MozTransform : '', msTransform : '', WebkitTransform : ''});
+				$F.add($f).css({width:''}).transform('translateX','');
 				return;
 			}
 
@@ -458,6 +504,54 @@
 			$f.filter(".active").showFrame();
 
 		}).trigger('resize');
+
+
+		$(".frameset").swipe(function(e){
+			if(!mobile()){
+				return;
+			}
+
+			var $F = $(this);
+			var $f = $F.find(".frame");
+			var $a = $f.filter('.active');
+			var W = $F.parent().innerWidth();
+			var n = $f.length;
+			var i = $a.index();
+
+			switch(e.type){
+				case "dragLeft":
+				case "dragRight":
+					// What is the current frame offset (fo)
+					var fo = -((100/n)*i);
+					// What is the delta change in X as a percentage of the whole length,
+					var dx = ((100/W)*e.gesture.deltaX)/n;
+
+					// slow down at the first and last pane
+					if( ( i === 0 && e.gesture.direction === 'right') || (i === (n-1) && e.gesture.direction === 'left') ){
+						dx *= 0.3;
+					}
+
+					$(this).transform('translateX', (fo + dx) + "%");
+				break;
+				case "release":
+					var $b = $a;
+					if(Math.abs(e.gesture.deltaX)>(W/2)){
+						if(e.gesture.direction === 'right'){
+							$b = $a.prev();
+						}
+						else{
+							$b = $a.next();
+						}
+					}
+
+					if($b.length===0){
+						$b = $a;
+					}
+					$b.showFrame();
+
+				break;
+			}
+		});
 
 
 		$(document.body).on('keydown', function(e){
