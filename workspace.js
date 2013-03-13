@@ -6,19 +6,24 @@
 		Touch = ("ontouchstart" in window),
 		MOBILE_WIDTH = 600;
 
-	var transform = testProp("transform");
 
 	//
 	// TestProp tests support for FlexBox or Flex css specification
-	//
+	// Tests CSS properties supported in the browser
 	function testProp(prop,undefined){
 		var s = (document.createElement('div')).style;
-		return s["Moz"+prop] !== undefined || s["Webkit"+prop] !== undefined || s["ms"+prop] !== undefined;
+		return s["Moz"+prop] !== undefined || s["Webkit"+prop] !== undefined || s["ms"+prop] !== undefined || s[prop.replace(/^./,function(m){return m.toUpperCase();})] !== undefined;
 	}
 
 	var flex = testProp("FlexWrap");
 	var legacyflex = testProp("BoxDirection");
 
+	var transform = testProp("Transform");
+	var transform3d = testProp("Perspective");
+
+	//
+	// Check if the view is in mobile mode.
+	// mobile() looks at window width to determine the mobile mode, essentially its just small screen
 	function mobile(){
 		var bool = (window.outerWidth < MOBILE_WIDTH);
 		$("html")[bool?'addClass':'removeClass']('mobile')[!bool?'addClass':'removeClass']('no-mobile');
@@ -29,15 +34,18 @@
 
 
 	//
-	// Add browser ability to the window html element
+	// Add browser ability to the window HTML.classList
 	document.documentElement.className = [document.documentElement.className || '', (flex?"":"no-")+"flex",(legacyflex?"":"no-")+"legacyflex", (Touch?'':'no-')+'touch'].join(" ");
 
 
 	//
 	// $.fn.transform
-	// Change the transform
+	// Assign CSS transform operation
 	$.fn.transform = function(prop,value){
 		var x = prop + "(" + value + ")";
+		if(transform3d && prop === "translateX"){
+			x = "translate3d("+value+",0,0)";
+		}
 		var o = {transform:x,msTransform:x,MozTransform:x,WebkitTransform:x};
 		return $(this).css(o);
 	};
@@ -49,41 +57,55 @@
 	//
 	$.fn.touch = function(callback, start, complete){
 
-		// Store callbacks, and previous pointer position
-		var cb = {}, mv = {}, fin = {};
-
-		$("body").bind('mousemove MSPointerMove', function(e){
-			// trigger the call
-			var i = e.originalEvent.pointerId||0,
-				func = cb[i],
-				o = mv[i];
-
-			if(func&&typeof(func)==='function'){
-				func.call(this, e, o);
-			}
-			mv[i] = e;
-		});
-
-		$("body").bind('mouseup MSPointerUp', function(e){
-
-			var i = e.originalEvent.pointerId||0;
-			cb[i] = null;
-
-			var func = fin[i];
-			if(func){
-				func.call(this,e);
-			}
-
-			fin[i] = null;
-		});
-
-
 		// loop through and add events
 		return $(this).each(function(){
+
+			// Store callbacks, and previous pointer position
+			var cb = {}, mv = {}, fin = {};
+
+			$("body").bind('mousemove MSPointerMove touchmove', function(e){
+				// trigger the call
+				var i = e.originalEvent.pointerId||0,
+					func = cb[i],
+					o = mv[i],
+					ts = e.timeStamp;
+
+				if(e.originalEvent.touches&&e.originalEvent.touches.length){
+					e = e.originalEvent.touches[0];
+					e.timeStamp = ts;
+				}
+
+				if(func&&typeof(func)==='function'){
+					func.call(this, e, o);
+				}
+				mv[i] = e;
+			});
+
+			$("body").bind('mouseup MSPointerUp touchend touchcancel', function(e){
+
+				var i = e.originalEvent.pointerId||0;
+				cb[i] = null;
+
+				if(e.type==="touchend"||e.type==="touchcancel"){
+					e = mv[i];
+				}
+
+				var func = fin[i];
+				if(func){
+					func.call(this,e);
+				}
+
+				fin[i] = null;
+			});
+
 			// bind events
 			$(this)
+				.bind('touchend', function(e){
+					console.log("el:touchend");
+					console.log(e);
+				})
 				.bind("selectstart",function(e){return false;})
-				.bind('mousedown MSPointerDown', function(e){
+				.bind('mousedown MSPointerDown touchstart', function(e){
 					// Cancel the mousemove if the msMousePointer is enabled
 					if(e.type==='mousemove'&&"msPointerEnabled" in window.navigator){
 						return;
@@ -92,14 +114,22 @@
 					// default pointer ID
 					var i = e.originalEvent.pointerId = ( e.originalEvent.pointerId || 0);
 
+					// If touch, choose the first element.
+					// For multiple we may need to pass in a flag to this function
+					if(e.originalEvent.touches&&e.originalEvent.touches.length){
+						var ts = e.timeStamp;
+						e = e.originalEvent.touches[0];
+						e.timeStamp = ts;
+					}
+
 					// bind the on move handler to the
 					var el = this;
 					mv[i] = e;
 					cb[i] = function(_e,o){ callback.call(el,_e,o,e); };
 					fin[i] = function(_e){ if(complete) {complete.call(el,_e,e);} };
 
-					e.preventDefault();
-					e.stopPropagation();
+//					e.preventDefault();
+//					e.stopPropagation();
 
 					// trigger start
 					if(start){
@@ -114,19 +144,39 @@
 	// Checks for a swipe to the left or to the right
 	$.fn.swipe = function(callback){
 		return $(this).touch(function(e,o,s){
-			var diff = e.screenX - s.screenX;
-			if(diff===0){
+			var dx = e.screenX - s.screenX,
+				dy = e.screenY - s.screenY;
+			if(dx===0||Math.abs(dy)>Math.abs(dx)){
 				return;
 			}
-			e.type = "drag" + (diff>0?'Right':'Left');
-			e.gesture = {deltaX:diff,direction:(diff>0?'right':'left')};
+			e.type = "drag" + (dx>0?'right':'left');
+			e.gesture = {deltaX:dx,direction:(dx>0?'right':'left')};
 			callback.call(this, e);
 		}, function(e){
 
 		}, function(e,s){
-			var diff = e.screenX - s.screenX;
-			e.type = "release";
-			e.gesture = {deltaX:diff,direction:(diff>0?'right':'left')};
+
+			var dx = e.screenX - s.screenX,
+				dy = e.screenY - s.screenY,
+				time = e.timeStamp - s.timeStamp;
+
+/**/
+			if(Math.abs(dy)>Math.abs(dx)){
+				return;
+			}
+			if(time<200&&Math.abs(dx)>50){
+				e.type = "swipe"+(dx>0?'right':'left');
+			}
+			else{
+				e.type = "release";
+			}
+
+			console.log("swype:"+e.type);
+			console.log(e,s);
+			console.log(dx);
+			console.log(time);
+
+			e.gesture = {deltaX:dx,direction:(dx>0?'right':'left')};
 			callback.call(this, e);
 		});
 	};
@@ -517,10 +567,11 @@
 			var W = $F.parent().innerWidth();
 			var n = $f.length;
 			var i = $a.index();
+			var $b = $a;
 
 			switch(e.type){
-				case "dragLeft":
-				case "dragRight":
+				case "dragleft":
+				case "dragright":
 					// What is the current frame offset (fo)
 					var fo = -((100/n)*i);
 					// What is the delta change in X as a percentage of the whole length,
@@ -532,10 +583,19 @@
 					}
 
 					$(this).transform('translateX', (fo + dx) + "%");
+
+					return;
+				case "swipeleft":
+					$b = $a.next();
 				break;
+
+				case "swiperight":
+					$b = $a.prev();
+				break;
+
 				case "release":
-					var $b = $a;
-					if(Math.abs(e.gesture.deltaX)>(W/2)){
+
+					if(Math.abs(e.gesture.deltaX)>(W/4)){
 						if(e.gesture.direction === 'right'){
 							$b = $a.prev();
 						}
@@ -544,13 +604,14 @@
 						}
 					}
 
-					if($b.length===0){
-						$b = $a;
-					}
-					$b.showFrame();
-
 				break;
 			}
+
+			if($b.length===0){
+				$b = $a;
+			}
+
+			$b.showFrame();
 		});
 
 
