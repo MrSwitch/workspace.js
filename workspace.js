@@ -101,8 +101,8 @@
 			// bind events
 			$(this)
 				.bind('touchend', function(e){
-					console.log("el:touchend");
-					console.log(e);
+/*					console.log("el:touchend");
+					console.log(e);*/
 				})
 				.bind("selectstart",function(e){return false;})
 				.bind('mousedown MSPointerDown touchstart', function(e){
@@ -171,11 +171,12 @@
 				e.type = "release";
 			}
 
+/*
 			console.log("swype:"+e.type);
 			console.log(e,s);
 			console.log(dx);
 			console.log(time);
-
+*/
 			e.gesture = {deltaX:dx,direction:(dx>0?'right':'left')};
 			callback.call(this, e);
 		});
@@ -241,11 +242,11 @@
 					width = $prev.outerWidth() + diff;
 
 					if( width > parseInt($prev.css('maxWidth'),10)){
-						console.log('Too big');
+						//console.log('Too big');
 						continue;
 					}
 					else if( width < parseInt($prev.css('minWidth'),10)){
-						console.log('Too small');
+						//console.log('Too small');
 						continue;
 					}
 					else{
@@ -256,7 +257,7 @@
 				while( ($prev = $prev.prev('.frame')) && $prev.length > 0 );
 
 				if($prev.length===0){
-					console.log('Cannot shift left item any further');
+					//console.log('Cannot shift left item any further');
 					return;
 				}
 
@@ -269,11 +270,11 @@
 					nwidth = $next.outerWidth() - diff;
 
 					if( nwidth > parseInt($next.css('maxWidth'),10)){
-						console.log('Too big for next');
+						//console.log('Too big for next');
 						continue;
 					}
 					else if( nwidth < parseInt($next.css('minWidth'),10)){
-						console.log('Too small for next');
+						//console.log('Too small for next');
 						continue;
 					}
 					else{
@@ -283,7 +284,7 @@
 				}
 				
 				if(!passed){
-					console.log('Cannot move right items any further');
+					//console.log('Cannot move right items any further');
 					return;
 				}
 
@@ -360,15 +361,15 @@
 					max = parseInt($(this).css('maxWidth'),10) || 0,
 					wid = $(this).outerWidth();
 
-				console.log(diff,wid,min,max);
+				//console.log(diff,wid,min,max);
 
 				if((wid+diff)<min){
-					console.log(diff,wid,'min');
+					//console.log(diff,wid,'min');
 					diff += (wid - min);
 					wid = min;
 				}
 				else if((wid+diff)>max&&max>0){
-					console.log(diff,wid,'max');
+					//console.log(diff,wid,'max');
 					diff -= (wid - max);
 					wid = max;
 				}
@@ -376,7 +377,7 @@
 					wid += diff;
 					diff = 0;
 				}
-				console.log(diff,wid);
+				//console.log(diff,wid);
 				$(this).filter(function(){
 					return !( flex && $(this).hasClass("flex") );
 				}).width((wid) +'px');
