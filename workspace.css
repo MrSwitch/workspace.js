@@ -2,6 +2,12 @@
  * WorkSpace.js
  * @author Andrew Dodson
  */
+
+*{
+	-moz-box-sizing:border-box;
+	box-sizing:border-box;
+}
+
 .frameset{
 	width:100%;
 	height:100%;
