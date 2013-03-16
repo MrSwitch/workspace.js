@@ -7,6 +7,9 @@
 	-moz-box-sizing:border-box;
 	box-sizing:border-box;
 }
+body{
+	margin:0;
+}
 
 .frameset{
 	width:100%;
@@ -103,6 +106,7 @@ html.mobile .frameset .inner-frameset{
 			position:absolute;
 			cursor:w-resize;
 			cursor: col-resize;
+			margin:0;
 			right:0;
 			top:0;
 			bottom:0;
