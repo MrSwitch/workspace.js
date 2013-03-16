@@ -44,7 +44,7 @@
 	$.fn.transform = function(prop,value){
 		var x = prop + "(" + value + ")";
 		if(transform3d && prop === "translateX"){
-			x = "translate3d("+value+",0,0)";
+			x = "translate3d("+(value||'0')+",0,0)";
 		}
 		var o = {transform:x,msTransform:x,MozTransform:x,WebkitTransform:x};
 		return $(this).css(o);
@@ -415,7 +415,6 @@
 			$(this).parent().trigger('fillframe');
 		});
 	};
-
 
 	//
 	$.fn.buildNavigation = function(){
