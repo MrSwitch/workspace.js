@@ -84,6 +84,7 @@ html.mobile .frameset .inner-frameset{
 	    letter-spacing: normal;
 	    word-spacing: normal;
 		display: inline-block;
+		-webkit-box-pack:center;
 	}
 
 	html.flex .frameset .frame.flex{
