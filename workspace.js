@@ -196,16 +196,20 @@
 		}*/
 
 		// Define "frame" as a direct desendent of the frameset
-		// Add active status to the first one, or who bares the className 'frame-main'
-		var $frames = $frmst.addClass('frameset').find('> *').addClass('frame').each(function(i){
-			if(i===0||$(this).hasClass("frame-main")){
-				$(this).addClass('active').siblings().removeClass("active");
-			}
-		});
+		var $frames = $frmst.addClass('frameset').find('> *').addClass('frame');
+
+		// Add "active" status to the first one, or who bares the className 'frame-main'
+		if($frames.filter(".active").length===0){
+			$frames.each(function(i){
+				if(i===0||$(this).hasClass("frame-main")){
+					$(this).addClass('active').siblings().removeClass("active");
+				}
+			});
+		}
 
 		// Do no more for touch devices
 		if( Touch ){
-			return;
+			return $frmst;
 		}
 
 
@@ -518,7 +522,7 @@
 
 		// Find elements denoted as framesets...
 		// Append attributes to their chiidren;
-		$('.frameset').frameset();
+		$('.frameset').frameset().find(".active").showFrame();
 
 		// Containers with images can be loaded on demand
 		// The container must simply have the className = "data-src"
