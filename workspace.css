@@ -28,8 +28,12 @@ body{
 
 
 	/** Swipe */
-	-webkit-transition:-webkit-transform 0.2s;
+	-webkit-transition:-webkit-transform 0.1s;
+	-moz-transition:-moz-transform 0.1s;
+	-ms-transition:-ms-transform 0.1s;
+	transition:transform 0.1s;
 }
+
 
 html.flex .frameset{
 
@@ -50,10 +54,16 @@ html.flex .frameset{
 		vertical-align:top;
 	}
 
-	/** Mobile view */
-html.mobile .frameset .inner-frameset{
-	-webkit-transition:-webkit-transform 0.3s;
+
+
+/** Mobile view */
+html.mobile{
+	/** Hide select **/
+	-webkit-user-select: none;
+	-webkit-user-drag: none;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
+
 	html.mobile .frameset .frame{
 		display:inline-block;
 	}
@@ -75,6 +85,9 @@ html.mobile .frameset .inner-frameset{
 
 	.frameset .frame{
 		-webkit-transition:width 0s;
+		-moz-transition:width 0s;
+		-ms-transition:width 0s;
+		transition:width 0s;
 		position:relative;
 		box-sizing:border-box;
 		-moz-box-sizing:border-box;
