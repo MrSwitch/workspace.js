@@ -70,9 +70,6 @@ html.mobile{
 	html.mobile .frameset .frame.active{
 		z-index:1;
 	}
-	html.mobile .frameset .frame{
-		overflow:hidden;
-	}
 	html.mobile.flex .frameset .frame.flex{
 		-moz-flex:auto;
 		-webkit-flex:auto;

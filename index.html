@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html style="-ms-content-zooming: none;overflow:hidden;">
-
 <head>
+
 	<title>Workspace.js</title>
 
 	<!-- iOS devices -->
@@ -10,23 +10,15 @@
 	
 	<meta content='True' name='HandheldFriendly' />
 
+	<script src="/_packages/jquery.js"></script>
 
+	<script src="./src/jquery.touch.js"></script>
+	<script src="./src/workspace.js"></script>
 
-<script>
-//<![CDATA[
-		var local = ( /local/.test(window.location.host) ? 0 : 1);
-		function loadScript(a){
-			for(var i=0;i<a.length;i++){
-				document.write('<script src="'+a[i]+'"><\/script>');
-			}
-		}
-		loadScript([['../_packages/jquery.js','http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'][local]]);
-//]]>
-</script>
+	<link href="./src/workspace.css" rel="stylesheet" />
 
-	<script src="workspace.js"></script>
-	<link rel="stylesheet" href="workspace.css" />
 <style>
+
 	body{
 		background-color:#f1f1f1;
 		margin:0;
@@ -70,7 +62,11 @@
 		footer input, footer button{
 			vertical-align:middle;
 		}
-		
+
+
+	pre{
+		white-space: pre-wrap;
+	}		
 	
 	section{
 		background-color:white;
@@ -93,6 +89,7 @@
 		padding:10px;
 		word-wrap:break-word;
 	}
+
 	nav:nth-child(1){
 		background-color:lightsalmon;
 	}
@@ -110,6 +107,7 @@
 	section .flex{
 		background-color:lightskyblue;
 	}
+
 	/*
 	nav:empty:after, article:empty:after{
 		content:attr(title);
@@ -128,62 +126,82 @@
 	</style>
 </head>
 <body>
-	<div class="frame-nav"></div>
 
-	<header>
-		<button class="toggle-frame-nav" style="float:left;position:absolute;">menu</button> <h1>workspace.js</h1>
-		<p>Kicking off web apps with a responsive layout, <b>and then some...</b></p>
-	</header>
+<div class="frame-nav"></div>
 
-	<section><div class="frameset"><nav title="Frames">
-		<h2>Frames</h2>
-		<p>Place navigation and content within a <code>[class=frameset]</code></p>
+<header>
+
+<button class="toggle-frame-nav" style="float:left;position:absolute;">menu</button>
+<h1>workspace.js</h1>
+<p>Kicking off web apps with a responsive layout, <b>and then some...</b></p>
+
+</header>
+
+<section><div class="frameset"><nav title="Frames">
+
+<h2>Frames</h2>
+<p>Place navigation and content within a <code>[class=frameset]</code></p>
+
 <pre>
-&lt;section class="frameset"&gt;
-  &lt;nav&gt;&lt;/nav&gt;
-  &lt;nav&gt;&lt;/nav&gt;
-  &lt;article class="flex"&gt;&lt;/article&gt;
-&lt;/section&gt;
+	&lt;section class="frameset"&gt;
+	  &lt;nav&gt;&lt;/nav&gt;
+	  &lt;nav&gt;&lt;/nav&gt;
+	  &lt;article class="flex"&gt;&lt;/article&gt;
+	&lt;/section&gt;
 </pre>
+
 <p>On a large screen; frames are displayed inline with their default widths. Control bars let the user alter their size.</p>
+
 <p>On a small screen (such as mobile) each frame occupies 100% of the parent frameset window.</p>
-	</nav><nav title="Menu">
-		<h2>Controls</h2>
-		<p>Place controls on the page to view the frame navigation on left side</p>
+
+</nav><nav title="Menu">
+
+
+<h2>Controls</h2>
+
+<p>Place controls on the page to view the frame navigation on left side</p>
+
 <pre>
-&lt;button class="toggle-frame-nav"&gt;toggle navigation&lt;/button&gt;
+	&lt;button class="toggle-frame-nav"&gt;toggle navigation&lt;/button&gt;
 </pre>
-		<button class="toggle-frame-nav">Demo</button>
+<button class="toggle-frame-nav">Demo</button>
+
 <h3>jQuery</h3>
 <p>Navigate to a frame</p>
 <pre>
-$(frameEl).showframe();
-</pre> 
-	</nav><article title="Events" class="flex">
-		<h2>Events touch/swipe</h2>
-		<p>Navigating between frames on small screens is simple as a swipe to the left or right with a finger or mouse pointer.</p>
-		<p>You can also take advantage of these in your application, e.g.</p>
-<pre>
-$("body").swipe(function(){
-  switch (e.type){
-    case "swipeleft":
-    // do something
-    case "swiperight":
-    // do something else
-  }
-}
-});
+	$(frameEl).showframe();
 </pre> 
 
-	</article><nav title="Image loading">
-		<h2>Ondemand &lt;img&gt;</h2>
-		<p>Defer image loading</p>
+</nav><article title="Events" class="flex">
+	
+<h2>Events touch/swipe</h2>
+<p>Navigating between frames on small screens is simple as a swipe to the left or right with a finger or mouse pointer.</p>
+<p>You can also take advantage of these in your application, e.g.</p>
+
 <pre>
-&lt;img data-src='http://www.gravatar.com/avatar/20043d5ade315f3c25d13b18dba95bc4.jpg' /&gt;
+	$("body").swipe(function(){
+	  switch (e.type){
+	    case "swipeleft":
+	    // do something
+	    case "swiperight":
+	    // do something else
+	  }
+	}
+	});
+</pre> 
+
+</article><nav title="Image loading">
+
+<h2>Ondemand &lt;img&gt;</h2>
+<p>Defer image loading</p>
+<pre>
+	&lt;img data-src='http://www.gravatar.com/avatar/20043d5ade315f3c25d13b18dba95bc4.jpg' /&gt;
 </pre>
-		<p>By setting the URL of an image to the attribute <code>data-src</code>,instead of <code>src</code>. The image shant be loaded until it is visible.</p>
-	</nav></div></section>
-	<footer>
-	</footer>
+<p>By setting the URL of an image to the attribute <code>data-src</code>,instead of <code>src</code>. The image shant be loaded until it is visible.</p>
+
+</nav></div></section>
+
+<footer></footer>
+
 </body>
 </html>
