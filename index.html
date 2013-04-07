@@ -30,6 +30,18 @@
 		position:absolute;
 		width:100%;
 	}
+	.pre,pre{
+		-webkit-tab-size:2;
+		-moz-tab-size:2;
+		-ms-tab-size:2;
+		-o-tab-size:2;
+		tab-size:2;
+	}
+	script.pre{
+		display: block;
+		white-space: pre-wrap;
+		font-family: monospace;
+	}
 	header{
 		height:100px;
 		top:0;
@@ -142,13 +154,14 @@
 <h2>Frames</h2>
 <p>Place navigation and content within a <code>[class=frameset]</code></p>
 
-<pre>
-	&lt;section class="frameset"&gt;
-	  &lt;nav&gt;&lt;/nav&gt;
-	  &lt;nav&gt;&lt;/nav&gt;
-	  &lt;article class="flex"&gt;&lt;/article&gt;
-	&lt;/section&gt;
-</pre>
+
+<script class="pre" type="text/html">
+	<section class="frameset">
+	  <nav></nav>
+	  <nav></nav>
+	  <article class="flex"></article>
+	</section>
+</script>
 
 <p>On a large screen; frames are displayed inline with their default widths. Control bars let the user alter their size.</p>
 
@@ -161,9 +174,10 @@
 
 <p>Place controls on the page to view the frame navigation on left side</p>
 
-<pre>
-	&lt;button class="toggle-frame-nav"&gt;toggle navigation&lt;/button&gt;
-</pre>
+<script class="pre" type="text/html">
+	<button class="toggle-frame-nav">toggle navigation</button>
+</script>
+
 <button class="toggle-frame-nav">Demo</button>
 
 <h3>jQuery</h3>
@@ -186,7 +200,6 @@
 	    case "swiperight":
 	    // do something else
 	  }
-	}
 	});
 </pre> 
 
@@ -194,9 +207,11 @@
 
 <h2>Ondemand &lt;img&gt;</h2>
 <p>Defer image loading</p>
-<pre>
-	&lt;img data-src='http://www.gravatar.com/avatar/20043d5ade315f3c25d13b18dba95bc4.jpg' /&gt;
-</pre>
+
+<script class="pre" type="text/html">
+	<img data-src='http://www.gravatar.com/avatar/20043d5ade315f3c25d13b18dba95bc4.jpg' />
+</script>
+
 <p>By setting the URL of an image to the attribute <code>data-src</code>,instead of <code>src</code>. The image shant be loaded until it is visible.</p>
 
 </nav></div></section>

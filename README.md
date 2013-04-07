@@ -15,11 +15,12 @@ Kicking off web apps with a responsive layout, and then some...
 Place navigation and content within a [class=frameset]
 
 
-	&lt;section class="frameset"&gt;
-	  &lt;nav&gt;&lt;/nav&gt;
-	  &lt;nav&gt;&lt;/nav&gt;
-	  &lt;article class="flex"&gt;&lt;/article&gt;
-	&lt;/section&gt;
+
+	<section class="frameset">
+	  <nav></nav>
+	  <nav></nav>
+	  <article class="flex"></article>
+	</section>
 
 
 On a large screen; frames are displayed inline with their default widths. Control bars let the user alter their size.
@@ -34,7 +35,8 @@ On a small screen (such as mobile) each frame occupies 100% of the parent frames
 Place controls on the page to view the frame navigation on left side
 
 
-	&lt;button class="toggle-frame-nav"&gt;toggle navigation&lt;/button&gt;
+	<button class="toggle-frame-nav">toggle navigation</button>
+
 
 Demo
 
@@ -58,7 +60,6 @@ You can also take advantage of these in your application, e.g.
 	    case "swiperight":
 	    // do something else
 	  }
-	}
 	});
  
 
@@ -67,7 +68,9 @@ You can also take advantage of these in your application, e.g.
 ## Ondemand &lt;img&gt;
 Defer image loading
 
-	&lt;img data-src='http://www.gravatar.com/avatar/20043d5ade315f3c25d13b18dba95bc4.jpg' /&gt;
+
+	<img data-src='http://www.gravatar.com/avatar/20043d5ade315f3c25d13b18dba95bc4.jpg' />
+
 
 By setting the URL of an image to the attribute data-src,instead of src. The image shant be loaded until it is visible.
 
