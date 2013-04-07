@@ -533,7 +533,7 @@ function gesture(e,o){
 	// Response Object
 	e.gesture = {};
 
-	if(e.originalEvent.touches&&e.originalEvent.touches.length>0){
+	if(e.originalEvent&&e.originalEvent.touches&&e.originalEvent.touches.length>0){
 		e.gesture.touches = e.originalEvent.touches;
 	}
 	else{
@@ -562,6 +562,9 @@ function gesture(e,o){
 
 		// Distance
 		e.gesture.distance = Math.sqrt((dx*dx)+(dy*dy));
+
+		// Velocity
+		e.gesture.velocity = e.gesture.distance/e.gesture.deltaTime;
 	}
 }
 
@@ -700,7 +703,7 @@ $.fn.swipe = function(callback){
 		gesture(e,s);
 
 		// How long did this operation take?
-		if(e.gesture.time<200&&e.gesture.distance>50){
+		if(e.gesture.deltaTime<200&&e.gesture.distance>20&&e.gesture.velocity>0.3){
 			e.type = "swipe"+e.gesture.direction;
 		}
 		else{
