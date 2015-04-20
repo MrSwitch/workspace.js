@@ -5,7 +5,7 @@
 
 	var console = window.console || {log:function(){}},
 		Touch = ("ontouchstart" in window),
-		MOBILE_WIDTH = 600;
+		MOBILE_WIDTH = 650;
 
 
 	//
@@ -26,9 +26,7 @@
 	// Check if the view is in mobile mode.
 	// mobile() looks at window width to determine the mobile mode, essentially its just small screen
 	function mobile(){
-		var bool = (window.outerWidth < MOBILE_WIDTH);
-		$("html")[bool?'addClass':'removeClass']('mobile')[!bool?'addClass':'removeClass']('no-mobile');
-		return bool;
+		return (document.documentElement.offsetWidth < MOBILE_WIDTH);
 	}
 
 	mobile();
@@ -74,11 +72,6 @@
 					$(this).addClass('active').siblings().removeClass("active");
 				}
 			});
-		}
-
-		// Do no more for touch devices
-		if( Touch ){
-			return $frmst;
 		}
 
 
@@ -208,9 +201,6 @@
 				return;
 			}
 
-			// Just in case this we defined as a mobile app
-			$("html.mobile").removeClass('mobile');
-
 			// for all the nested frames within this
 			// we are going to reorganise the widths
 			var diff = $(this).width();
@@ -329,10 +319,12 @@
 				e.stopPropagation();
 			});
 
+
 			$(window).bind('resize', function(){
 				$nav.height(window.innerHeight+"px");
 				$(document.body).height(window.innerHeight+"px");
 			}).trigger('resize');
+
 		});
 	};
 
@@ -449,6 +441,7 @@
 
 					// Cancel defaults
 					e.preventDefault();
+					e.stopPropagation();
 
 					// What is the current frame offset (fo)
 					var fo = -((100/n)*i);
@@ -460,11 +453,13 @@
 						dx *= 0.3;
 					}
 
-					$F.css({
-						"WebkitTransition":"-webkit-transform 0",
-						"mozTransition":"-moz-transform 0",
-						"transition":"transform 0"
-					}).transform('translateX', (fo + dx) + "%");
+					$F
+					.transform('translateX', (fo + dx) + "%")
+					.css({
+						"WebkitTransition":"-webkit-transform 0s",
+						"mozTransition":"-moz-transform 0s",
+						"transition":"transform 0s"
+					});
 
 					return;
 				case "swipeleft":

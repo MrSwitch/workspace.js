@@ -1,0 +1,25 @@
+{
+  "name": "workspace.js",
+  "version": "1.0.0",
+  "description": "menu\r # workspace.js\r Kicking off web apps with a responsive layout, and then some...",
+  "main": "dist/workspace.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MrSwitch/workspace.js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MrSwitch/workspace.js/issues"
+  },
+  "homepage": "https://github.com/MrSwitch/workspace.js",
+  "devDependencies": {
+    "shunt": "^0.1.6"
+  }
+}
