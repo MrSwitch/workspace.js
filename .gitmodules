@@ -1,0 +1,3 @@
+[submodule "tricks"]
+	path = tricks
+	url = http://localhost/mrswitch/tricks

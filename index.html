@@ -9,16 +9,12 @@
 <script src="/adorn/adorn.js" async></script>
 
 <!-- iOS devices -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <meta name="apple-mobile-web-app-capable" content="yes">
 
 <meta content='True' name='HandheldFriendly' />
 
-<script src="/_packages/jquery.js"></script>
-
-<script src="./src/jquery.touch.js"></script>
-<script src="./src/workspace.js"></script>
-
+<script src="./dist/workspace.js"></script>
 <link href="./src/workspace.css" rel="stylesheet" />
 
 <style>
@@ -69,7 +65,7 @@ nav:empty:after, article:empty:after{
 
 
 </style>
-<body class="adorn-fullscreen">
+<body class="adorn-fullscreen" style="height:100%;">
 <div class="frame-nav"></div>
 
 <header>
@@ -82,7 +78,7 @@ nav:empty:after, article:empty:after{
 
 </header>
 
-<section style="height:100%;"><div class="frameset"><nav class="frame" title="Frames">
+<section style="max-height:100%; height:800px;"><div class="frameset"><nav class="frame" title="Frames">
 
 <h2>Frames</h2>
 <p>Place navigation and content within a <code>[class=frameset]</code></p>
@@ -113,30 +109,18 @@ nav:empty:after, article:empty:after{
 
 <button class="toggle-frame-nav">Demo</button>
 
-<h3>jQuery</h3>
+<h3>Native Dom Events</h3>
 <p>Navigate to a frame</p>
 <pre>
-	$(frameEl).showframe();
-</pre> 
+	frameEl.dispatchEvent(new Event('active'));
+</pre>
 
 </nav><article title="Events" class="frame-flex">
-	
+
 <h2>Events touch/swipe</h2>
 <p>Navigating between frames on small screens is simple as a swipe to the left or right with a finger or mouse pointer.</p>
-<p>You can also take advantage of these in your application, e.g.</p>
 
-<pre>
-	$("body").swipe(function(){
-	  switch (e.type){
-	    case "swipeleft":
-	    // do something
-	    case "swiperight":
-	    // do something else
-	  }
-	});
-</pre> 
-
-</article><nav class="frame" title="Lazy loading">
+</article><nav class="frame data-src" title="Lazy loading">
 
 <h2>Lazy loading</h2>
 <p>Defer image loading</p>
@@ -145,6 +129,9 @@ nav:empty:after, article:empty:after{
 	<img data-src='http://www.gravatar.com/avatar/20043d5ade315f3c25d13b18dba95bc4.jpg' />
 </script>
 
-<p>By setting the URL of an image to the attribute <code>data-src</code>,instead of <code>src</code>. The image shant be loaded until it is visible.</p>
+<p>By setting the URL of an image to the attribute <code>data-src</code>,instead of <code>src</code>. The image shant be loaded until it is visible. Scroll down...</p>
+
+<img style="margin-top:1000px;" data-src='http://www.gravatar.com/avatar/20043d5ade315f3c25d13b18dba95bc4.jpg'/>
+
 
 </nav></div></section>
