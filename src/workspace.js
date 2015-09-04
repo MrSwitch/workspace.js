@@ -29,5 +29,6 @@ ready(() => {
 	// This is good for mobile.
 	sidemenu('.frame-nav');
 
+	// Trigger resize
 	emit(window, 'resize');
 });

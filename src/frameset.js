@@ -63,6 +63,7 @@ on(window, 'resize', () => {
 
 	// Get the number of frames in the frameset
 	each(".frameset", (frameset) => {
+
 		let frames = frameset.querySelectorAll(".frame");
 
 		let frameWidth = '';
@@ -373,7 +374,7 @@ function createFrameControls(frame) {
 			prev = frm = prev.previousElementSibling;
 		}
 
-		do{
+		do {
 			width = prev.offsetWidth + diff;
 
 			style = cssCalc(prev);
@@ -391,7 +392,7 @@ function createFrameControls(frame) {
 				break;
 			}
 		}
-		while((prev = prev.previousElementSibling) && prev);
+		while ((prev = prev.previousElementSibling) && prev);
 
 		if (!prev) {
 			//console.log('Cannot shift left item any further');
@@ -402,27 +403,28 @@ function createFrameControls(frame) {
 			nwidth,
 			passed = false;
 
-		while( next.nextElementSibling ){
+		while (next.nextElementSibling) {
+
 			next = next.nextElementSibling;
 			nwidth = next.offsetWidth - diff;
 
 			style = cssCalc(next);
 
-			if( nwidth > parseInt(style.maxWidth, 10)) {
+			if (nwidth > parseInt(style.maxWidth, 10)) {
 				//console.log('Too big for next');
 				continue;
 			}
-			else if( nwidth < parseInt(style.minWidth,10)) {
+			else if (nwidth < parseInt(style.minWidth,10)) {
 				//console.log('Too small for next');
 				continue;
 			}
-			else{
+			else {
 				passed = true;
 				break;
 			}
 		}
 
-		if(!passed){
+		if (!passed) {
 			//console.log('Cannot move right items any further');
 			return;
 		}
