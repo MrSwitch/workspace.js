@@ -92,7 +92,7 @@
 }
 
 
-.frameset, 
+.frameset,
 .frameset-vertical{
 
 	.border-box();
@@ -121,7 +121,7 @@
 	display: -moz-box;
 	-moz-box-orient: horizontal;
 
-	display: flex; 
+	display: flex;
 	flex-direction: row;
 
 }
@@ -314,16 +314,16 @@ button.workspace-back{
 
 
 
-/** 
+/**
  *
- * SHOW NAVIGATION 
+ * SHOW NAVIGATION
  *
  */
 .toggle-frame-nav{
 }
 
 .frame-nav{
-	position:fixed;
+	position: fixed;
 	text-align: left;
 	display: block;
 	opacity: 0;
@@ -374,6 +374,10 @@ button.workspace-back{
 	.frame-nav{
 		opacity: 1;
 		z-index: 1;
+	}
+
+	&.ie .frame-nav{
+		.transform(translateX(0));
 	}
 }
 

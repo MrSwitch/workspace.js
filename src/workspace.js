@@ -1,8 +1,9 @@
 // Supports...
-import './utils/detect/flex';
-import './utils/detect/legacyflex';
-import './utils/detect/transform';
-import './utils/detect/touch';
+import './utils/support/flex';
+import './utils/support/legacyflex';
+import './utils/support/transform';
+import './utils/support/touch';
+import './utils/support/browser';
 
 // Events
 import emit from './utils/events/emit';

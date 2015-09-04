@@ -2,10 +2,10 @@
 // Make child elements flexible frame like
 
 // Supports...
-import flex from './utils/detect/flex';
-import './utils/detect/legacyflex';
-import './utils/detect/transform';
-import supportsTouch from './utils/detect/touch';
+import flex from './utils/support/flex';
+import './utils/support/legacyflex';
+import './utils/support/transform';
+import supportsTouch from './utils/support/touch';
 
 // Events
 import emit from './utils/events/emit';
