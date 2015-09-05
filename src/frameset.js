@@ -35,7 +35,7 @@ import removeClass from './utils/dom/removeClass';
 import hasClass from './utils/dom/hasClass';
 
 
-var MOBILE_WIDTH = 650;
+var MOBILE_WIDTH = 850;
 
 //
 // Check if the view is in mobile mode.
