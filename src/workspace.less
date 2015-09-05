@@ -3,7 +3,6 @@
  * @author Andrew Dodson
  */
 
-
 .border-box(){
 	-moz-box-sizing:border-box;
 	box-sizing:border-box;
@@ -42,8 +41,8 @@
 @desktop: ~"all and (min-width: 1440px)";
 @laptop: ~"all and (max-width: 1440px) and (min-width: 1048px)";
 @tablet: ~"all and (max-width: 1048px)";
-@mobile: ~"all and (max-width: 650px), screen and (max-device-width: 480px)";
-@no-mobile: ~"all and (min-width: 650px)";
+@mobile: ~"all and (max-width: 850px), screen and (max-device-width: 480px)";
+@no-mobile: ~"all and (min-width: 850px)";
 
 
 *{
@@ -92,7 +91,7 @@
 }
 
 
-.frameset, 
+.frameset,
 .frameset-vertical{
 
 	.border-box();
@@ -121,7 +120,7 @@
 	display: -moz-box;
 	-moz-box-orient: horizontal;
 
-	display: flex; 
+	display: flex;
 	flex-direction: row;
 
 }
@@ -151,7 +150,6 @@
 		min-width:100%;
 	}
 }
-
 
 @media @mobile{
 
@@ -314,16 +312,16 @@ button.workspace-back{
 
 
 
-/** 
+/**
  *
- * SHOW NAVIGATION 
+ * SHOW NAVIGATION
  *
  */
 .toggle-frame-nav{
 }
 
 .frame-nav{
-	position:fixed;
+	position: fixed;
 	text-align: left;
 	display: block;
 	opacity: 0;
@@ -375,9 +373,12 @@ button.workspace-back{
 		opacity: 1;
 		z-index: 1;
 	}
+
+	&.ie .frame-nav{
+		.transform(translateX(0));
+	}
 }
 
 body > *{
 	.transition-transform( 0.3s );
 }
-
