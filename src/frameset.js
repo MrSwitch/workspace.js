@@ -441,3 +441,14 @@ function setFrameWidth(frame, width) {
 	frame = flex ? filter(frame, ":not(.flex)") : frame;
 	css(frame, {width: width +"px"});
 }
+
+
+
+// legacy support old jQuery way
+{
+	if (typeof(jQuery) !== 'undefined') {
+		jQuery.fn.showFrame = function() {
+			jQuery(this).trigger('active');
+		};
+	}
+}
