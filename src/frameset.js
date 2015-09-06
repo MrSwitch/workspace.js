@@ -448,7 +448,7 @@ function setFrameWidth(frame, width) {
 {
 	if (typeof(jQuery) !== 'undefined') {
 		jQuery.fn.showFrame = function() {
-			jQuery(this).trigger('active');
+			emit(this, 'active');
 		};
 	}
 }
