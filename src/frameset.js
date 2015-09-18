@@ -165,7 +165,6 @@ function initFrameset(frameset) {
 
 		// Is the frame
 		if (mobile()) {
-//				$('.frame',this).width('100%');
 			return;
 		}
 

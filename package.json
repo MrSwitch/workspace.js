@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "menu\r # workspace.js\r Kicking off web apps with a responsive layout, and then some...",
   "main": "dist/workspace.js",
+  "jsnext:main": "src/workspace.js",
   "directories": {
     "test": "tests"
   },
@@ -19,7 +20,7 @@
   "bugs": {
     "url": "https://github.com/MrSwitch/workspace.js/issues"
   },
-  "homepage": "https://github.com/MrSwitch/workspace.js",
+  "homepage": "https://adodson.com/workspace.js/",
   "devDependencies": {
     "babel": "^5.8.20",
     "babelify": "^6.1.3",
